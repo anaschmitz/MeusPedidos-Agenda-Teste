@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="SuiteDefault" thread-count="1">
+
+    <parameter name="url" value="http://qa.meuspedidos.com.br/login" />
+    <parameter name="user" value="anaschmitz@gmail.com" />
+    <parameter name="password" value="123456" />
+
+    <test name="Firefox" group-by-instances="true">
+        <parameter name="browser" value="firefox" />
+        <packages>
+            <package name="pages" />
+        </packages>
+    </test>
+
+</suite>
