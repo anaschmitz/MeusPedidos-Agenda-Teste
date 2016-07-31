@@ -9,7 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import utils.AppointmentType;
 import utils.Period;
 
-public class Agenda {
+public class AgendaPage {
 	
 	@FindBy(id = "id_status_chzn")
 	private WebElement status;
@@ -30,7 +30,7 @@ public class Agenda {
 	private WebElement callType;
 	
 	@FindBy(id = "btn_novo_agendamento")
-	private WebElement btnNovoAgendamento;
+	private WebElement btnNewAppointment;
 	
 	@FindBy(id = "btn_registrar_atividade")
 	private WebElement btnRegistrarAtividade;
@@ -98,7 +98,7 @@ public class Agenda {
 	}	
 	
 	public void btnNovoAgendamentoClick() {
-		btnNovoAgendamento.click();
+		btnNewAppointment.click();
 	}
 	
 	public void btnRegistrarAtividadeClick() {

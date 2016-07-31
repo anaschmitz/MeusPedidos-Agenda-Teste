@@ -27,7 +27,7 @@ public class CommonTest {
 
 	@AfterSuite
 	public void quitDriver() throws Exception {
-		driver.quit();
+//		driver.quit();
 		System.out.println("Quit driver!");
 	}
 }

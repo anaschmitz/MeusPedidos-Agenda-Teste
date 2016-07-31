@@ -1,22 +1,28 @@
 package popups;
 
+import java.awt.RenderingHints.Key;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import entity.Appointment;
 import utils.AppointmentType;
 
-public class NovoAgendamentoPopUp {
+public class NewAppointmentPopUp {
 		
-	@FindBy(xpath = "//*[@id='id_tipo_atividade']/li[1]/label")
+	@FindBy(id = "id_tipo_atividade_0")
 	private WebElement visitType;
 	
-	@FindBy(xpath = "//*[@id='id_tipo_atividade']/li[2]/label")
+	@FindBy(id = "id_tipo_atividade_1")
 	private WebElement callType;
 	
-	@FindBy(xpath = "//*[@id='id_tipo_atividade']/li[3]/label") 
+	@FindBy(id = "id_tipo_atividade_2")
 	private WebElement activityType;
 	
 	@FindBy(id = "id_cliente_atividade")
@@ -43,14 +49,20 @@ public class NovoAgendamentoPopUp {
 	@FindBy(xpath = "//*[@id='form-cadastro']/div[7]/a[2]") 
 	private WebElement btnCancel;
 	
-	public void fillFields(AppointmentType type, String client, WebDriver driver, int cbDateIndex , String date, String hour, String user, String note) {
-		fillType(type);
-		fillClient(client);
-		fillCbDate(driver, cbDateIndex);
-		fillDate(date);
-		fillHour(hour);
-		fillUser(user);
-		fillNote(note);
+	private void waitLoad(WebDriver driver){
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.elementToBeClickable(btnSave));
+	}
+	
+	public void fillFields(Appointment appoint, WebDriver driver) {
+		waitLoad(driver);
+		fillType(appoint.getType());
+		fillClient(appoint.getClient());
+		fillCbDate(driver, appoint.getCbDateIndex());
+		fillDate(appoint.getDate());
+		fillHour(appoint.getHour());
+		fillUser(appoint.getUser());
+		fillNote(appoint.getNote());
 	}
 
 	private void fillType(AppointmentType type) {
@@ -66,6 +78,8 @@ public class NovoAgendamentoPopUp {
 	private void fillClient(String client) {
 		this.client.clear();
 		this.client.sendKeys(client);
+		this.client.sendKeys(Keys.DOWN);
+		this.client.sendKeys(Keys.ENTER);
 	}
 	
 	private void fillCbDate(WebDriver driver, int index) {
@@ -79,15 +93,14 @@ public class NovoAgendamentoPopUp {
 	}
 	
 	private void fillHour(String hour) {
+		this.hour.click();
 		this.hour.clear();
 		this.hour.sendKeys(hour);
 	}
 	
 	private void fillUser(String user) { 
-		this.user.clear();
-		this.user.sendKeys(user);
-		this.user.sendKeys(Keys.DOWN);
-		this.user.sendKeys(Keys.ENTER);
+		Select userSelect = new Select(this.user);
+		userSelect.selectByVisibleText(user);
 	}
 	
 	private void fillNote(String note) {

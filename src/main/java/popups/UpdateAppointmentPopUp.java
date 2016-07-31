@@ -93,7 +93,7 @@ public class UpdateAppointmentPopUp {
 
 	private void fillUser(String user) {
 		Select userSelect = new Select(this.user);
-		userSelect.selectByValue(user);
+		userSelect.selectByVisibleText(user);
 	}
 
 	private void fillNote(String note) {
