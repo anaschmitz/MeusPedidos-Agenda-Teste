@@ -5,14 +5,14 @@ public enum AppointmentType {
 	ACTIVITY("Atividade"), 
 	VISIT("Visita"), 
 	CALL("Ligação");
-	
-	AppointmentType(String label){
+
+	AppointmentType(String label) {
 		this.label = label;
 	}
-	
+
 	private String label;
-	
-	public String getLabel(){
+
+	public String getLabel() {
 		return this.label;
 	}
 }

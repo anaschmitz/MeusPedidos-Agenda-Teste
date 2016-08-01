@@ -18,8 +18,7 @@ public class Appointment {
 	private String description;
 	private boolean done;
 
-	public Appointment(AppointmentType type, String client, int cbDateIndex, Date date, String user,
-			String note) {
+	public Appointment(AppointmentType type, String client, int cbDateIndex, Date date, String user, String note) {
 		this.type = type;
 		this.client = client;
 		this.cbDateIndex = cbDateIndex;
@@ -29,9 +28,9 @@ public class Appointment {
 		this.dateFormatted = null;
 		this.hourFormmatted = null;
 	}
-	
-	public Appointment(AppointmentType type, String client, Date date, String user,
-			String note, boolean done, String description) {
+
+	public Appointment(AppointmentType type, String client, Date date, String user, String note, boolean done,
+			String description) {
 		this.type = type;
 		this.client = client;
 		this.date = date;
@@ -42,8 +41,8 @@ public class Appointment {
 		this.dateFormatted = null;
 		this.hourFormmatted = null;
 	}
-	
-	public Appointment(AppointmentType type, String client, String description, Date date){
+
+	public Appointment(AppointmentType type, String client, String description, Date date) {
 		this.type = type;
 		this.client = client;
 		this.description = description;
@@ -119,14 +118,14 @@ public class Appointment {
 	}
 
 	public String getDateFormatted() {
-		if(dateFormatted == null){
+		if (dateFormatted == null) {
 			dateFormatted = DateUtils.getDateFormatted(getDate(), DateUtils.BR_PATTERN);
 		}
 		return dateFormatted;
 	}
 
 	public String getHourFormmatted() {
-		if(hourFormmatted == null){
+		if (hourFormmatted == null) {
 			hourFormmatted = DateUtils.getDateFormatted(getDate(), DateUtils.HOUR_PATTERN);
 		}
 		return hourFormmatted;

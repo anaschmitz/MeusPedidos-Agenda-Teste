@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 
 import commons.CommonTest;
 import entity.Appointment;
-import popup.ConfirmDeletePopUp;
+import popups.ConfirmDeletePopUp;
 import popups.NewActivityPopUp;
 import popups.NewAppointmentPopUp;
 import popups.UpdateAppointmentPopUp;
@@ -110,15 +110,17 @@ public class AgendaTest extends CommonTest {
 		ConfirmDeletePopUp confirmDeletePopUp = PageFactory.initElements(driver, ConfirmDeletePopUp.class);
 		SeleniumUtils.waitForDocumentReady(driver);
 		confirmDeletePopUp.btnDeleteClick(driver);
-		
+
+		SeleniumUtils.waitForDocumentReady(driver);
 		waitLoad();
 
-		agendaPage.doSearch(Status.ACTIVITIESDONE.getLabel(), appointment.getUser(), appointment.getClient(),
-				appointment.getType(), Period.CURRENTMONTH, driver);
-
-		waitLoad();
-		boolean match = searchMatch();
-		Assert.assertFalse(match);
+		// agendaPage.doSearch(Status.ACTIVITIESDONE.getLabel(),
+		// appointment.getUser(), appointment.getClient(),
+		// appointment.getType(), Period.CURRENTMONTH, driver);
+		//
+		// waitLoad();
+		WebElement successBox = getSuccessBoxElement("//*[@id='atividades']/li/div");
+		Assert.assertEquals("Não possui atividade.", successBox.getText());
 	}
 
 	private void waitLoad() {
@@ -126,16 +128,13 @@ public class AgendaTest extends CommonTest {
 		wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("loader")));
 	}
 
-	// @Test(priority = 5)
 	public void newAppointmentTestDontSubmitWithOldDate() {
-		System.out.println("NovoAgendamentoTestDontSubmitWithOldDate");
+		// TODO
 
 		System.out.println("Teste quebra pois o sistema permite incluir com data antiga");
-
-		// deletar
 	}
 
-	@Test(priority = 6)
+	@Test(priority = 5)
 	public void newActivityTest() {
 		agendaPage.btnNewActivitylick(driver);
 
@@ -149,16 +148,16 @@ public class AgendaTest extends CommonTest {
 		Assert.assertEquals(appointment.getType().getLabel() + " cadastrada com sucesso!", successBox.getText());
 	}
 
-	@Test(priority = 7)
+	@Test(priority = 6)
 	public void readNewActivityTest() {
 		agendaPage.doSearch(Status.ACTIVITIESDONE.getLabel(), appointment.getUser(), appointment.getClient(),
 				appointment.getType(), Period.CURRENTMONTH, driver);
 		waitLoad();
 		boolean match = searchMatch();
-		//Assert.assertTrue(match);
+		Assert.assertTrue(match);
 	}
 
-	@Test(priority = 8)
+	@Test(priority = 7)
 	public void updateNewActivityTest() {
 		agendaPage.btnUpdateAppointmentClick(1, driver);
 
@@ -182,7 +181,7 @@ public class AgendaTest extends CommonTest {
 		Assert.assertTrue(match);
 	}
 
-	@Test(priority = 9)
+	@Test(priority = 8)
 	public void deleteNewActivityTest() {
 		agendaPage.btnUpdateAppointmentClick(1, driver);
 
@@ -193,24 +192,23 @@ public class AgendaTest extends CommonTest {
 		ConfirmDeletePopUp confirmDeletePopUp = PageFactory.initElements(driver, ConfirmDeletePopUp.class);
 		SeleniumUtils.waitForDocumentReady(driver);
 		confirmDeletePopUp.btnDeleteClick(driver);
-		
+
+		SeleniumUtils.waitForDocumentReady(driver);
 		waitLoad();
 
-		agendaPage.doSearch(Status.ACTIVITIESNOTDONE.getLabel(), appointment.getUser(), appointment.getClient(),
-				appointment.getType(), Period.CURRENTMONTH, driver);
-
-		waitLoad();
-		boolean match = searchMatch();
-		//Assert.assertFalse(match);
+		// agendaPage.doSearch(Status.ACTIVITIESNOTDONE.getLabel(),
+		// appointment.getUser(), appointment.getClient(),
+		// appointment.getType(), Period.CURRENTMONTH, driver);
+		//
+		// waitLoad();
+		WebElement successBox = getSuccessBoxElement("//*[@id='atividades']/li/div");
+		Assert.assertEquals("Não possui atividade.", successBox.getText());
 	}
 
-	// @Test(priority = 10)
 	public void NewActivityTestDontSubmitWithFutureDate() {
-		System.out.println("RegistarTestDontSubmitWithFutureDate");
+		// TODO
 
 		System.out.println("Teste quebra pois o sistema permite incluir com data futura");
-
-		// deleta
 	}
 
 	private WebElement getSuccessBoxElement(String xpath) {
@@ -232,15 +230,13 @@ public class AgendaTest extends CommonTest {
 			By xpathHour = By.xpath("//*[@id='atividades']/li[" + i + "]/div[2]/div/div[2]/span[2]");
 			WebElement hour = driver.findElement(xpathHour);
 			By xpathUser = By.xpath("//*[@id='atividades']/li[" + i + "]/div[2]/div/div[2]/span[3]");
-			// check //*[@id='atividades']/li[" + i + "]/div[1]/div
 			WebElement user = driver.findElement(xpathUser);
 
 			if (client.getText().trim().equals(appointment.getClient())
-					&& date.getText().toUpperCase()
-							.equals(DateUtils.getDateFormatted(appointment.getDate(), "EEEE, dd MMM yyyy")
-									.toUpperCase())
-					&& hour.getText().equals(appointment.getHourFormmatted())
-					&& user.getText().contains(appointment.getUser())) {
+					&& date.getText().toUpperCase().equals(
+							DateUtils.getDateFormatted(appointment.getDate(), "EEEE, dd MMM yyyy").toUpperCase())
+					&& (hour.getText().isEmpty() || hour.getText().equals(appointment.getHourFormmatted()))
+					&& (appointment.getUser() == null || user.getText().contains(appointment.getUser()))) {
 				match = true;
 				break;
 			}

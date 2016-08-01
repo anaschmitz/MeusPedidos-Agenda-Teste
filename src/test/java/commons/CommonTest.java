@@ -18,7 +18,7 @@ public class CommonTest {
 	public void initDriver(@Optional("firefox") String browser, String url) throws Exception {
 		if (browser.equals("firefox")) {
 			driver = new FirefoxDriver();
-		} else  {
+		} else {
 			throw new InvalidParameterException("Browser " + browser + "not supported!");
 		}
 		driver.get(url);
@@ -27,6 +27,6 @@ public class CommonTest {
 
 	@AfterSuite
 	public void quitDriver() throws Exception {
-		//driver.quit();
+		 driver.quit();
 	}
 }

@@ -36,11 +36,10 @@ public class NewActivityPopUp {
 
 	@FindBy(xpath = "//*[@id='form-cadastro-popover-realizada']/div[5]/a[2]")
 	private WebElement btnCancel;
-	
-	private void waitLoad(WebDriver driver){
+
+	private void waitLoad(WebDriver driver) {
 		WebDriverWait wait = new WebDriverWait(driver, 5);
 		wait.until(ExpectedConditions.elementToBeClickable(btnSave));
-//		wait.until(ExpectedConditions.visibilityOfAllElements(Arrays.asList(visitType, client, btnSave)));
 	}
 
 	public void fillFields(Appointment activiy, WebDriver driver) {
@@ -66,7 +65,6 @@ public class NewActivityPopUp {
 		this.client.sendKeys(client);
 		WebDriverWait wait = new WebDriverWait(driver, 5);
 		wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("loading_autocomplete_id_cliente_atividade")));
-//		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='div_campo_id_cliente_atividade']/ul/li[1]/a/div/h5")));
 		this.client.sendKeys(Keys.ENTER);
 	}
 
