@@ -70,6 +70,7 @@ public class UpdateAppointmentPopUp {
 		fillUser(appoint.getUser());
 		fillNote(appoint.getNote());
 		fillDone(appoint.isDone());
+		fillDescription(appoint.getDescription());
 	}
 
 	private void fillType(AppointmentType type) {
@@ -124,7 +125,7 @@ public class UpdateAppointmentPopUp {
 	}
 
 	private void fillDescription(String description) {
-		if (this.description.isDisplayed()) {
+		if (!description.isEmpty()) {
 			this.description.clear();
 			this.description.sendKeys(description);
 		}
@@ -138,7 +139,8 @@ public class UpdateAppointmentPopUp {
 		btnCancel.click();
 	}
 
-	public void btnDeleteClick() {
+	public void btnDeleteClick(WebDriver driver) {
+		waitLoad(driver);
 		btnDelete.click();
 	}
 
