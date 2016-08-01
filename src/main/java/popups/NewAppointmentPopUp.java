@@ -1,7 +1,5 @@
 package popups;
 
-import java.awt.RenderingHints.Key;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -50,17 +48,17 @@ public class NewAppointmentPopUp {
 	private WebElement btnCancel;
 	
 	private void waitLoad(WebDriver driver){
-		WebDriverWait wait = new WebDriverWait(driver, 5);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
 		wait.until(ExpectedConditions.elementToBeClickable(btnSave));
 	}
 	
 	public void fillFields(Appointment appoint, WebDriver driver) {
 		waitLoad(driver);
 		fillType(appoint.getType());
-		fillClient(appoint.getClient());
+		fillClient(appoint.getClient(),driver);
 		fillCbDate(driver, appoint.getCbDateIndex());
-		fillDate(appoint.getDate());
-		fillHour(appoint.getHour());
+		fillDate(appoint.getDateFormatted());
+		fillHour(appoint.getHourFormmatted());
 		fillUser(appoint.getUser());
 		fillNote(appoint.getNote());
 	}
@@ -75,10 +73,11 @@ public class NewAppointmentPopUp {
         }
 	}
 	
-	private void fillClient(String client) {
+	private void fillClient(String client, WebDriver driver) {
 		this.client.clear();
 		this.client.sendKeys(client);
-		this.client.sendKeys(Keys.DOWN);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='div_campo_id_cliente_atividade']/ul/li[1]/a/div/h5")));
 		this.client.sendKeys(Keys.ENTER);
 	}
 	
@@ -90,10 +89,10 @@ public class NewAppointmentPopUp {
 	private void fillDate(String date) {
 		this.date.clear();
 		this.date.sendKeys(date);
+		this.date.click();
 	}
 	
 	private void fillHour(String hour) {
-		this.hour.click();
 		this.hour.clear();
 		this.hour.sendKeys(hour);
 	}

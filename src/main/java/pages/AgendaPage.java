@@ -5,6 +5,8 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import utils.AppointmentType;
 import utils.Period;
@@ -20,58 +22,76 @@ public class AgendaPage {
 	@FindBy(id = "id_cliente")
 	private WebElement client;
 	
-	@FindBy(xpath = "//*[@id='id_tipo']/li[1]/label")
+	@FindBy(xpath = "//*[@id='selecionado_autocomplete_id_cliente']/div[1]/a")
+	private WebElement chanceClient;
+	
+	@FindBy(id = "id_tipo_0")
 	private WebElement activityType;
 	
-	@FindBy(xpath = "//*[@id='id_tipo']/li[2]/label")
+	@FindBy(id = "id_tipo_1")
 	private WebElement visitType;
 	
-	@FindBy(xpath = "//*[@id='id_tipo']/li[3]/label")
+	@FindBy(id = "id_tipo_2")
 	private WebElement callType;
 	
 	@FindBy(id = "btn_novo_agendamento")
 	private WebElement btnNewAppointment;
 	
 	@FindBy(id = "btn_registrar_atividade")
-	private WebElement btnRegistrarAtividade;
+	private WebElement btnNewActivity;
 	
 	@FindBy(xpath = "//*[@id='filtro_periodo']/li[1]/a")
-	private WebElement mesAtual;
+	private WebElement currentMonth;
 	
 	@FindBy(xpath = "//*[@id='filtro_periodo']/li[2]/a")
-	private WebElement mesPassado;
+	private WebElement lastMonth;
 	
 	@FindBy(xpath = "//*[@id='filtro_periodo']/li[3]/a")
-	private WebElement cincoMeses;
+	private WebElement fiveMonths;
 	
 	@FindBy(xpath = "//*[@id='filtro_periodo']/li[4]/a")
-	private WebElement outroPeriodo;
+	private WebElement otherPeriod;
 	
-	public void doSearch(String status, String user, String client, AppointmentType type, Period period) {		
-		fillStatus(status);
-		fillUser(user);
-		fillClient(client);
+	private void waitLoad(WebDriver driver){
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.elementToBeClickable(btnNewAppointment));
+	}
+	
+	public void waitLoadField(WebDriver driver, WebElement field){
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.visibilityOf(field));
+	}
+	
+	public void doSearch(String status, String user, String client, AppointmentType type, Period period, WebDriver driver) {		
+		waitLoad(driver);
+		fillStatus(status, driver);
+		fillUser(user, driver);
+		fillClient(client,driver);
 		fillType(type);
-		fillPeriod(period);
+		periodClick(period);
 	}
 
-	private void fillStatus(String status) { 
-		this.status.clear();
-		this.status.sendKeys(status);
-		this.status.sendKeys(Keys.DOWN);
-		this.status.sendKeys(Keys.ENTER);
+	private void fillStatus(String status, WebDriver driver) {
+		this.status.click();
+		WebElement cdStatus = driver.findElement(By.xpath("//*[@id='id_status_chzn']/div/div/input"));
+		cdStatus.sendKeys(status);
+		cdStatus.sendKeys(Keys.ENTER);
 	}
 	
-	private void fillUser(String user) { 
-		this.user.clear();
-		this.user.sendKeys(user);
-		this.user.sendKeys(Keys.DOWN);
-		this.user.sendKeys(Keys.ENTER);
+	private void fillUser(String user, WebDriver driver) { 
+		this.user.click();
+		WebElement cdUser = driver.findElement(By.xpath("//*[@id='id_colaborador_chzn']/div/div/input"));
+		cdUser.sendKeys(user);
+		cdUser.sendKeys(Keys.ENTER);
 	}
 	
-	private void fillClient(String client) {
+	private void fillClient(String client, WebDriver driver) {
+		changeClient(driver);
 		this.client.clear();
 		this.client.sendKeys(client);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("loading_autocomplete_id_cliente")));
+		this.client.sendKeys(Keys.ENTER);
 	}
 	
 	private void fillType(AppointmentType type) {
@@ -84,46 +104,61 @@ public class AgendaPage {
         }
 	}
 	
-	private void fillPeriod(Period period) {
-		if (period == Period.MESATUAL) {
-			mesAtual.click();
-        } else if (period == Period.MESPASSADO) {
-            mesPassado.click();
-        } else if (period == Period.CINCOMESES) {
-            cincoMeses.click();
-        } else if (period == Period.OUTROPERIODO) {
-            outroPeriodo.click();
+	private void periodClick(Period period) {
+		if (period == Period.CURRENTMONTH) {
+			currentMonth.click();
+        } else if (period == Period.LASTMONTH) {
+            lastMonth.click();
+        } else if (period == Period.FIVEMONTHS) {
+            fiveMonths.click();
+        } else if (period == Period.OTHERPERIOD) {
+            otherPeriod.click();
             //informar preriodopopup
         }
 	}	
 	
-	public void btnNovoAgendamentoClick() {
+	public void btnNovoAgendamentoClick(WebDriver driver) {
+		waitLoad(driver);
 		btnNewAppointment.click();
 	}
 	
-	public void btnRegistrarAtividadeClick() {
-		btnRegistrarAtividade.click();
+	public void btnNewActivitylick(WebDriver driver) {
+		waitLoad(driver);
+		btnNewActivity.click();
 	}
 	
 	public void changeClient(WebDriver driver) {
-		driver.findElement(By.xpath("//*[@id='selecionado_autocomplete_id_cliente']/div[1]/a")).click();
+		if (chanceClient.isDisplayed()){
+			chanceClient.click();
+			waitLoadField(driver, client);
+		}
 	}
 	
-	public void checkDone(int index) {
-		//click
+	public void checkDone(int index, WebDriver driver) {
+		By xpathBtnDone = By.xpath("//*[@id='atividades']/li[" + index + "]/div[1]/div");
+		driver.findElement(xpathBtnDone).click();
 	}
 	
-	public void describeAppointment(int index) {
-		//click
-		//campo
-		//salvar
+	public void describeAppointmentClick(int index, WebDriver driver) {
+		By xpathBtnDecribe = By.xpath("//*[@id='atividades']/li[" + index + "]/div[2]/div/a[1]");
+		driver.findElement(xpathBtnDecribe).click();
 	}
 	
-	public void updateAppointment(int index) {
-		//*[@id='L_93']/div[2]/div/div[1]/a
-		//*[@id='V_92']/div[2]/div/div[1]/a
-		//click
-		//retorna popup
+	public void fillDescription(int index, WebDriver driver, String description) {
+		By xpathDescription = By.xpath("//*[@id='atividades']/li[" + index + "]/div[2]/div/div[4]/textarea");
+		WebElement elementDescription = driver.findElement(xpathDescription);
+		elementDescription.clear();
+		elementDescription.sendKeys(description);
+	}
+	
+	public void saveDescriptionClick(int index, WebDriver driver) {
+		By xpathBtnSave = By.xpath("//*[@id='atividades']/li[" + index + "]/div[2]/div/div[4]/a");
+		driver.findElement(xpathBtnSave).click();
+	}
+	
+	public void btnUpdateAppointmentClick(int index, WebDriver driver) {
+		By xpathBtnUpdate = By.xpath("//*[@id='atividades']/li[" + index + "]/div[2]/div/div[1]/a");
+		driver.findElement(xpathBtnUpdate).click();
 	}
 
 }

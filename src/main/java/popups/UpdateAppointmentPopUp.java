@@ -5,19 +5,22 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import entity.Appointment;
 import utils.AppointmentType;
 
 public class UpdateAppointmentPopUp {
 
-	@FindBy(xpath = "//*[@id='id_tipo_atividade']/li[1]/label")
+	@FindBy(id = "id_tipo_atividade_0")
 	private WebElement visitType;
 
-	@FindBy(xpath = "//*[@id='id_tipo_atividade']/li[2]/label")
+	@FindBy(id = "id_tipo_atividade_1")
 	private WebElement callType;
 
-	@FindBy(xpath = "//*[@id='id_tipo_atividade']/li[3]/label")
+	@FindBy(id = "id_tipo_atividade_2")
 	private WebElement activityType;
 
 	@FindBy(id = "id_cliente_atividade")
@@ -41,6 +44,9 @@ public class UpdateAppointmentPopUp {
 	@FindBy(id = "id_realizada")
 	private WebElement done;
 
+	@FindBy(id = "id_descricao")
+	private WebElement description;
+
 	@FindBy(xpath = "//*[@id='form-cadastro']/div[9]/a[1]")
 	private WebElement btnSave;
 
@@ -50,16 +56,20 @@ public class UpdateAppointmentPopUp {
 	@FindBy(xpath = "//*[@id='form-cadastro']/div[9]/a[3]")
 	private WebElement btnDelete;
 
-	public void fillFields(AppointmentType type, String client, String date, String hour, String user, String note,
-			boolean done, String description) {
-		fillType(type);
-		fillClient(client);
-		fillDate(date);
-		fillHour(hour);
-		fillUser(user);
-		fillNote(note);
-		fillDone(done);
-		fillDescription(description);
+	private void waitLoad(WebDriver driver) {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.elementToBeClickable(btnSave));
+	}
+
+	public void fillFields(Appointment appoint, WebDriver driver) {
+		waitLoad(driver);
+		fillType(appoint.getType());
+		fillClient(appoint.getClient(), driver);
+		fillDate(appoint.getDateFormatted());
+		fillHour(appoint.getHourFormmatted());
+		fillUser(appoint.getUser());
+		fillNote(appoint.getNote());
+		fillDone(appoint.isDone());
 	}
 
 	private void fillType(AppointmentType type) {
@@ -72,9 +82,14 @@ public class UpdateAppointmentPopUp {
 		}
 	}
 
-	private void fillClient(String client) {
+	private void fillClient(String client, WebDriver driver) {
+		changeClient();
 		this.client.clear();
 		this.client.sendKeys(client);
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions
+				.presenceOfElementLocated(By.xpath("//*[@id='div_campo_id_cliente_atividade']/ul/li[1]/a/div/h5")));
+		this.client.sendKeys(Keys.ENTER);
 	}
 
 	public void changeClient() {
@@ -84,6 +99,7 @@ public class UpdateAppointmentPopUp {
 	private void fillDate(String date) {
 		this.date.clear();
 		this.date.sendKeys(date);
+		this.date.click();
 	}
 
 	private void fillHour(String hour) {
@@ -102,18 +118,16 @@ public class UpdateAppointmentPopUp {
 	}
 
 	private void fillDone(boolean done) {
-		this.done.clear();
-		if (done) {
+		if (done && !this.done.isSelected() || !done && this.done.isSelected()) {
 			this.done.click();
 		}
 	}
 
 	private void fillDescription(String description) {
-
-//		@FindBy(id = "id_descricao")
-//		private WebElement description;
-//		this.description.clear();
-//		this.description.sendKeys(description);
+		if (this.description.isDisplayed()) {
+			this.description.clear();
+			this.description.sendKeys(description);
+		}
 	}
 
 	public void btnSaveClick() {
